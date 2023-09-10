@@ -81,7 +81,9 @@ def index():
 @login_required
 def mypage():
     if request.method == 'GET':
-        posts = Post.query.all()
+      #  posts = Post.query.all()
+        posts = Post.query.filter_by(username = current_user.username).all()
+
         return render_template('mypage.html', posts=posts)
 
 @app.route('/create', methods=['GET', 'POST'])

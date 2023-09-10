@@ -1,13 +1,21 @@
 {% extends "base.html" %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/get.css') }}">
+{% endblock %}
+
 {% block content %}
-    <a href="/index">戻る</a>
+<a href="/index">戻る</a>
+<div class="post-list">
     {% for post in posts %}
-    <article>
-        <a href="/{{post.id}}/update" role="button">編集</a>
-        <a href="/{{post.id}}/delete" role="button">削除</a>
-        <h3>タイトル：{{ post.title }}</h3>
-        <p>投稿日時：{{ post.created_at }}</p>
-        <p>本文：　{{ post.body }}</p>
+    <article class="post">
+        <div class="post-actions">
+            <a href="/{{post.id}}/update" role="button" class="edit-button">編集</a>
+            <a href="/{{post.id}}/delete" role="button" class="delete-button">削除</a>
+        </div>
+        <h3 class="post-title">タイトル：{{ post.title }}</h3>
+        <p class="post-date">投稿日時：{{ post.created_at }}</p>
+        <p class="post-body">本文：{{ post.body }}</p>
     </article>
-{% endfor %}
+    {% endfor %}
+</div>
 {% endblock %}

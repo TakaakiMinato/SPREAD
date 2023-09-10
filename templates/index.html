@@ -1,16 +1,27 @@
 {% extends "base.html" %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/get.css') }}">
+{% endblock %}
+
 {% block content %}
+<header>
     <h1>SPREAD</h1>
-    <h2>こんにちは{{username}}さん<h2>
-    <a href="/create">新しい投稿をする</a>
-    <a href="/mypage">過去の投稿</a>
-    <a href="/logout">ログアウト</a>
+    <h2>こんにちは、{{username}}さん</h2>
+    <nav>
+        <a href="/create">新しい投稿をする</a>
+        <a href="/mypage">過去の投稿</a>
+        <a href="/logout">ログアウト</a>
+    </nav>
+</header>
+<div class="container">
     {% for post in posts %}
     <article>
-        <h3>タイトル：{{ post.title }}</h3>
-        <p>投稿者:{{ post.username }}</p>
-        <p>投稿日時：{{ post.created_at }}</p>
-        <p>本文：　{{ post.body }}</p>
+        <h3>{{ post.title }}</h3>
+        <p>投稿者: {{ post.username }}</p>
+        <p>投稿日時: {{ post.created_at }}</p>
+        <p>本文: {{ post.body }}</p>
     </article>
-{% endfor %}
+    {% endfor %}
+</div>
 {% endblock %}
