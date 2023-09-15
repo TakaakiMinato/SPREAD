@@ -1,0 +1,10 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - aws deploy push --application-name SPREAD --s3-location s3://spread-artifact-backet/artifact.zip --source /var/www/SPREAD 
+artifacts:
+  files:
+    - '**/*'  # src ディレクトリ内のすべてのファイルとディレクトリを含む
+  base-directory: /var/www/SPREAD
