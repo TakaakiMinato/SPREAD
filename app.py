@@ -7,7 +7,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///spread.db"
+#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///spread.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql:///spread_db"
+
 app.config["SECRET_KEY"] = os.urandom(24) 
 db = SQLAlchemy(app)
 
@@ -25,7 +27,7 @@ class Post(db.Model):
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True)
-    password = db.Column(db.String(12))
+    password = db.Column(db.String(255))
 
 @login_manager.user_loader
 def load_user(user_id):
