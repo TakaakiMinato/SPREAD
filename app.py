@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 app = Flask(__name__)
 
+load_dotenv()
 db_user = os.environ.get("DB_USER")
 db_password = os.environ.get("DB_PASSWORD")
 db_host = os.environ.get("DB_HOST")
