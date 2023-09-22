@@ -3,7 +3,8 @@ version: 0.2
 phases:
   build:
     commands:
-      - aws deploy push --application-name spread-cd --s3-location s3://spread-artifact-backet/artifact.zip --source . 
+      #- aws deploy push --application-name spread-cd --s3-location s3://spread-artifact-backet/artifact.zip --source . 
+      - aws deploy push --application-name spread-codedeploy --s3-location s3://spread-s3/artifact.zip --source . 
 artifacts:
   files:
     - '**/*'  # src ディレクトリ内のすべてのファイルとディレクトリを含む
