@@ -7,8 +7,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
 app = Flask(__name__)
+#sqliteを使用する場合
 #app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///spread.db"
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql:///spread_db"
+
+#ローカル開発用DB
+#app.config["SQLALCHEMY_DATABASE_URI"] = "mysql:///spread_db"
+
+#RDS接続
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://admin:M19970616@spread-db.cltnutjgc2rp.ap-northeast-1.rds.amazonaws.com/spread_db"
+
 
 app.config["SECRET_KEY"] = os.urandom(24) 
 db = SQLAlchemy(app)
