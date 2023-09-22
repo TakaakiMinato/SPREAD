@@ -5,17 +5,20 @@ import pytz
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
+
+db_user = os.environ.get("DB_USER")
+db_password = os.environ.get("DB_PASSWORD")
+db_host = os.environ.get("DB_HOST")
+db_name = os.environ.get("DB_NAME")
+
 #sqliteを使用する場合
 #app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///spread.db"
 
-#ローカル開発用DB
-#app.config["SQLALCHEMY_DATABASE_URI"] = "mysql:///spread_db"
-
-#RDS接続
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://admin:M19970616@spread-db.cltnutjgc2rp.ap-northeast-1.rds.amazonaws.com/spread_db"
-
+#MYSQLを使用する場合
+app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql://{db_user}:{db_password}@{db_host}/{db_name}"
 
 app.config["SECRET_KEY"] = os.urandom(24) 
 db = SQLAlchemy(app)
