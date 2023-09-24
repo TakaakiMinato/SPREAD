@@ -15,11 +15,11 @@ db_password = os.environ.get("DB_PASSWORD")
 db_host = os.environ.get("DB_HOST")
 db_name = os.environ.get("DB_NAME")
 
-#sqliteを使用する場合
-#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///spread.db"
+#M開発環境
+#app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql://{db_user}:{db_password}@{db_host}/{db_name}"
 
-#MYSQLを使用する場合
-app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql://{db_user}:{db_password}@{db_host}/{db_name}"
+#本番環境
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://admin:M19970616@spread-rds.cltnutjgc2rp.ap-northeast-1.rds.amazonaws.com/spread_db"
 
 app.config["SECRET_KEY"] = os.urandom(24) 
 db = SQLAlchemy(app)
