@@ -14,6 +14,51 @@
         <a href="/logout">ログアウト</a>
     </nav>
 </header>
+
+
+<div id="smoking-stats">
+        <p>禁煙期間: <span id="smoking-duration-days"></span>日 <span id="smoking-duration-hours"></span>時間 <span id="smoking-duration-minutes"></span>分 <span id="smoking-duration-seconds"></span>秒</p>
+        <p>禁煙本数: <span id="smoking-count"></span></p>
+        <p>節約金額: <span id="saving-amount"></span></p>
+    </div>
+    
+    <script>
+        const startTime = new Date('{{ setting.start_at }}');
+        const number = parseFloat('{{ setting.number }}');
+        const price = parseFloat('{{ setting.price / 20 }}');
+    
+        function updateSmokingStats() {
+            const smokingDurationDaysElement = document.getElementById('smoking-duration-days');
+            const smokingDurationHoursElement = document.getElementById('smoking-duration-hours');
+            const smokingDurationMinutesElement = document.getElementById('smoking-duration-minutes');
+            const smokingDurationSecondsElement = document.getElementById('smoking-duration-seconds');
+            const smokingCountElement = document.getElementById('smoking-count');
+            const savingAmountElement = document.getElementById('saving-amount');
+    
+            const currentTime = new Date();
+            const timeDiff = currentTime - startTime;
+            const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hoursDiff = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutesDiff = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const secondsDiff = Math.floor((timeDiff % (1000 * 60)) / 1000);
+    
+            const smokingCount = daysDiff * number;
+            const savingAmount = daysDiff * number * price;
+    
+            smokingDurationDaysElement.textContent = daysDiff;
+            smokingDurationHoursElement.textContent = hoursDiff;
+            smokingDurationMinutesElement.textContent = minutesDiff;
+            smokingDurationSecondsElement.textContent = secondsDiff;
+            smokingCountElement.textContent = smokingCount;
+            savingAmountElement.textContent = `¥${savingAmount}`;
+        }
+    
+        setInterval(updateSmokingStats, 1000);
+    
+        updateSmokingStats();
+    </script>
+    
+        
 <div class="container">
     {% for post in posts %}
     <article>

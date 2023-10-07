@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sign.css') }}">
+{% endblock %}
+{% block content %}
+<div class="form-container">
+    <h1>新規登録</h1>
+    <form method="POST" class="login-form">
+        <label for="number">１日に何本吸っていましたか？</label>
+        <input type="number" name="number" id="number">
+        <label for="number">１箱の値段は？</label>
+        <input type="number" name="price" id="price">
+        <input type="submit" value="さっそく始める" class="login-button">
+    </form>
+</div>
+{% endblock %}

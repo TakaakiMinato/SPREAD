@@ -1,5 +1,7 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
+from flask_session import Session
+from flask_migrate import Migrate
 from datetime import datetime
 import pytz
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
@@ -15,17 +17,28 @@ db_password = os.environ.get("DB_PASSWORD")
 db_host = os.environ.get("DB_HOST")
 db_name = os.environ.get("DB_NAME")
 
-#M開発環境
-#app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql://{db_user}:{db_password}@{db_host}/{db_name}"
+#開発環境
+app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql://{db_user}:{db_password}@{db_host}/{db_name}"
 
 #本番環境
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://admin:M19970616@spread-rds.cltnutjgc2rp.ap-northeast-1.rds.amazonaws.com/spread_db"
+#app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://admin:M19970616@spread-rds.cltnutjgc2rp.ap-northeast-1.rds.amazonaws.com/spread_db"
 
-app.config["SECRET_KEY"] = os.urandom(24) 
+app.config["SECRET_KEY"] = os.urandom(24)
+app.config['SESSION_TYPE'] = 'filesystem'
+
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+Session(app)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+with app.app_context():
+    db.create_all()
 
 class Post(db.Model):
     __tablename__ = 'post'
@@ -39,6 +52,14 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True)
     password = db.Column(db.String(255))
+    first_login = db.Column(db.Boolean, default=True)
+
+class Setting(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False, unique=True)
+    price = db.Column(db.Integer, nullable=False)
+    number = db.Column(db.Integer, nullable=False)
+    start_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -54,7 +75,12 @@ def login():
         user = User.query.filter_by(username=username).first()
         if check_password_hash(user.password, password):
             login_user(user)
-            return redirect('/index')
+            if user.first_login:
+                user.first_login = False
+                db.session.commit()
+                return redirect('/setting')
+            else:
+                return redirect('/index')
     else:
         return render_template('login.html')
 
@@ -63,18 +89,26 @@ def signup():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-
-        with app.app_context():
-            db.create_all()
-            user = User(username=username, password=generate_password_hash(password, method='sha256'))
-            db.session.add(user)
-            db.session.commit()
-
+        user = User(username=username, password=generate_password_hash(password, method='sha256'))
+        db.session.add(user)
+        db.session.commit()
         return redirect('/')
-
     else:
         return render_template('signup.html')
 
+@app.route('/setting', methods=['GET', 'POST'])
+@login_required
+def setting():
+    if request.method == 'POST':
+        user_id = current_user.id
+        price = request.form.get('price')
+        number = request.form.get('number')
+        setting = Setting(user_id=user_id, price=price, number=number)
+        db.session.add(setting)
+        db.session.commit()
+        return redirect('/index')
+    else:
+        return render_template('setting.html')
 
 @app.route('/logout')
 @login_required
@@ -88,15 +122,14 @@ def index():
     if request.method == 'GET':
         posts = Post.query.all()
         username = current_user.username
-        return render_template('index.html', posts=posts, username=username)
+        setting = Setting.query.filter_by(user_id = current_user.id).first()
+        return render_template('index.html', setting=setting, posts=posts, username=username)
 
 @app.route('/mypage', methods=['GET', 'POST'])
 @login_required
 def mypage():
     if request.method == 'GET':
-      #  posts = Post.query.all()
         posts = Post.query.filter_by(username = current_user.username).all()
-
         return render_template('mypage.html', posts=posts)
 
 @app.route('/create', methods=['GET', 'POST'])
@@ -106,19 +139,12 @@ def create():
         username = current_user.username
         title = request.form.get('title')
         body = request.form.get('body')
-
-        with app.app_context():
-            db.create_all()
-            post = Post(username=username, title=title, body=body)
-            db.session.add(post)
-            db.session.commit()
-
+        post = Post(username=username, title=title, body=body)
+        db.session.add(post)
+        db.session.commit()
         return redirect('/index')
-
     else:
         return render_template('create.html')
-
-
 
 @app.route('/<int:id>/update', methods=['GET', 'POST'])
 @login_required
@@ -127,19 +153,17 @@ def update(id):
         post = Post.query.get(id)
         return render_template('update.html', post=post)
     else:
-        with app.app_context():
-            post = Post.query.get(id)
-            post.title = request.form.get('title')
-            post.body = request.form.get('body')
-            db.session.commit()
+        post = Post.query.get(id)
+        post.title = request.form.get('title')
+        post.body = request.form.get('body')
+        db.session.commit()
         return redirect('/mypage')
 
 @app.route('/<int:id>/delete', methods=['GET'])
 @login_required
 def delete(id):
-    with app.app_context():
-        post = Post.query.get(id)
-        db.session.delete(post)
-        db.session.commit()
+    post = Post.query.get(id)
+    db.session.delete(post)
+    db.session.commit()
     return redirect('/mypage')
 
