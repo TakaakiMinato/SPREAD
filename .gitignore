@@ -1,3 +1,4 @@
 .env
 .vscode
 migrations
+flask_session

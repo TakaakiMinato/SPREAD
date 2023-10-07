@@ -1,65 +1,9 @@
-from flask import Flask, render_template, request, redirect, session
-from flask_sqlalchemy import SQLAlchemy
-from flask_session import Session
-from flask_migrate import Migrate
-from datetime import datetime
-import pytz
-from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
-import os
-from dotenv import load_dotenv
+from flask import render_template, request, redirect, url_for, flash
+from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.security import check_password_hash, generate_password_hash
+from app import app, db, login_manager
+from app.models import User, Post, Setting
 
-app = Flask(__name__)
-
-load_dotenv()
-db_user = os.environ.get("DB_USER")
-db_password = os.environ.get("DB_PASSWORD")
-db_host = os.environ.get("DB_HOST")
-db_name = os.environ.get("DB_NAME")
-
-#開発環境
-app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql://{db_user}:{db_password}@{db_host}/{db_name}"
-
-#本番環境
-#app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://admin:M19970616@spread-rds.cltnutjgc2rp.ap-northeast-1.rds.amazonaws.com/spread_db"
-
-app.config["SECRET_KEY"] = os.urandom(24)
-app.config['SESSION_TYPE'] = 'filesystem'
-
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-Session(app)
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
-with app.app_context():
-    db.create_all()
-
-class Post(db.Model):
-    __tablename__ = 'post'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(30), nullable=False)
-    title = db.Column(db.String(50), nullable=False)
-    body = db.Column(db.String(300), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
-
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(30), unique=True)
-    password = db.Column(db.String(255))
-    first_login = db.Column(db.Boolean, default=True)
-
-class Setting(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False, unique=True)
-    price = db.Column(db.Integer, nullable=False)
-    number = db.Column(db.Integer, nullable=False)
-    start_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
 
 @login_manager.user_loader
 def load_user(user_id):
