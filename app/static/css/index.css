@@ -1,0 +1,170 @@
+/* 全体のスタイル */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.container {
+    max-width: 600px; /* 最大幅を設定 */
+    margin: 0 auto; /* 水平方向に中央揃え */
+    padding: 20px;
+    background-color: #fff; /* 背景色を白に設定 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* カード風の影を追加 */
+}
+
+/* ヘッダーのスタイル */
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    position: relative; /* トグルアイコンの位置を設定するために必要 */
+}
+
+header h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+/* その他のスタイル */
+/* ... */
+
+/* メニュートグルのスタイル */
+.menu-toggle {
+    cursor: pointer;
+    position: absolute;
+    top: 20px; /* 上からの位置を調整 */
+    right: 20px; /* 右からの位置を調整 */
+}
+
+.toggle-icon {
+    font-size: 24px;
+    margin-left: 10px;
+    background-color: transparent; /* 背景色を透明に */
+    padding: 5px 10px; /* アイコンの周りに余白を追加 */
+    border-radius: 5px; /* 角丸を追加 */
+}
+
+/* メニューのスタイル */
+nav {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: left;
+    position: absolute;
+    top: 70px; /* ヘッダーの下に配置 */
+    right: 20px; /* 右からの位置を調整 */
+    width: 200px;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.8); /* 背景色を半透明に */
+    border-radius: 5px; /* 角丸を追加 */
+}
+
+nav a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+/* メニューが非表示の場合 */
+.hidden {
+    display: none;
+}
+
+/* smoking-statのスタイル */
+#smoking-stats {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-size: 18px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 100%; /* smoking-statsを幅いっぱいに広げる */
+    margin: 0 auto 20px; /* 中央揃えと投稿との間に余白を追加 */
+}
+
+/* スタイルの変更 */
+#smoking-stats p {
+    margin: 0;
+    font-size: 14px;
+    color: #888;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    white-space: nowrap; /* テキストの自動改行を禁止 */
+}
+
+#smoking-stats span {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    border: none;
+    white-space: nowrap; /* テキストの自動改行を禁止 */
+}
+
+/* 投稿のスタイル */
+.container article {
+    border-top: 1px solid #ddd; /* 投稿間の薄い線を追加 */
+    padding: 20px;
+    margin-bottom: 0px;
+    max-width: 100%; /* 投稿を幅いっぱいに広げる */
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.post-username {
+    font-size: 18px;
+    color: #333;
+    margin: 0;
+}
+
+.post-created-at {
+    font-size: 12px;
+    color: #888;
+    margin: 0;
+}
+
+/* リンクのスタイル */
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* カード風のスタイル */
+.container .gpt-comment {
+    background-color: #fff; /* 背景色を白に設定 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* カード風の影を追加 */
+    padding: 20px; /* 内部の余白を設定 */
+    margin-bottom: 20px; /* 下部の余白を設定 */
+    max-width: 100%; /* 最大幅を100% - 左右の余白分に設定 */
+    box-sizing: border-box; /* ボックスモデルを使用して幅を計算 */
+}
+
+
+/* カード内のアイコンとテキストのスタイル */
+.container .gpt-comment p {
+    margin: 0; /* マージンをリセット */
+    display: flex; /* コンテンツを横並びに配置 */
+    align-items: center; /* 垂直方向の中央揃え */
+}
+
+/* ロボットアイコンのスタイル */
+.container .gpt-comment i {
+    font-size: 24px; /* アイコンのサイズを設定 */
+    margin-right: 10px; /* アイコンとテキストの間隔を設定 */
+}

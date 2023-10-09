@@ -3,6 +3,11 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import app, db, login_manager
 from app.models import User, Post, Setting
+from datetime import datetime
+import openai
+import json
+from sqlalchemy import desc
+
 
 
 @login_manager.user_loader
@@ -67,7 +72,30 @@ def index():
         posts = Post.query.all()
         username = current_user.username
         setting = Setting.query.filter_by(user_id = current_user.id).first()
-        return render_template('index.html', setting=setting, posts=posts, username=username)
+        
+        def generate_prompt(comment, duration):
+            return """私は禁煙{}日目です。私は今、{}と考えています。
+            禁煙継続を応援するコメントを生成してください
+            """.format(
+                duration, comment
+            )
+
+        comment = "まだ投稿はしていません。ユーザーに投稿を推薦するように促すコメントの生成を促してください"
+        if Post.query.filter_by(user_id=current_user.id).first():
+            comment = Post.query.filter_by(user_id=current_user.id).order_by(desc(Post.id)).first().body
+        start_at = Setting.query.filter_by(user_id=current_user.id).first().start_at
+        current_date = datetime.now().date()
+        duration = (start_at.date() - current_date).days
+     
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=generate_prompt(comment, duration),
+            max_tokens=100,
+            temperature=1.0
+        )
+        generated_text = response.choices[0].text
+       
+        return render_template('index.html', generated_text=generated_text, setting=setting, posts=posts, username=username)
 
 @app.route('/mypage', methods=['GET', 'POST'])
 @login_required
@@ -83,7 +111,8 @@ def create():
         username = current_user.username
         title = request.form.get('title')
         body = request.form.get('body')
-        post = Post(username=username, title=title, body=body)
+        user_id = current_user.id
+        post = Post(user_id=user_id,  username=username, title=title, body=body)
         db.session.add(post)
         db.session.commit()
         return redirect('/index')

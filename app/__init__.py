@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from flask_migrate import Migrate
 from flask_login import LoginManager
+import openai
 import os
 
 app = Flask(__name__)
@@ -20,5 +21,6 @@ login_manager.init_app(app)
 Session(app)
 
 # 他の拡張機能を初期化する場合、ここで初期化
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 from app import routes, models

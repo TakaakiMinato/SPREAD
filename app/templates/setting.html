@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/sign.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/setting.css') }}">
 {% endblock %}
 {% block content %}
 <div class="form-container">
-    <h1>新規登録</h1>
+    <h1>あなたのデータを教えてください</h1>
     <form method="POST" class="login-form">
         <label for="number">１日に何本吸っていましたか？</label>
         <input type="number" name="number" id="number">

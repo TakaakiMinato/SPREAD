@@ -1,32 +1,51 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPREAD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="menu-toggle" id="menu-toggle">
+            <span class="toggle-icon">&#9776;</span>
+        </div>
+        <h1>SPREAD</h1>
+        <nav id="nav-links" class="hidden">
+            <a href="/create">新しい投稿をする</a>
+            <a href="/mypage">過去の投稿</a>
+            <a href="/logout">ログアウト</a>
+        </nav>
+        </header>
 
-{% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/get.css') }}">
-{% endblock %}
-
-{% block content %}
-<header>
-    <h1>SPREAD</h1>
-    <h2>こんにちは、{{username}}さん</h2>
-    <nav>
-        <a href="/create">新しい投稿をする</a>
-        <a href="/mypage">過去の投稿</a>
-        <a href="/logout">ログアウト</a>
-    </nav>
-</header>
-
-
-<div id="smoking-stats">
-        <p>禁煙期間: <span id="smoking-duration-days"></span>日 <span id="smoking-duration-hours"></span>時間 <span id="smoking-duration-minutes"></span>分 <span id="smoking-duration-seconds"></span>秒</p>
-        <p>禁煙本数: <span id="smoking-count"></span></p>
-        <p>節約金額: <span id="saving-amount"></span></p>
+    <div class="container">
+        <div class="gpt-comment">
+            <p><i class="fas fa-robot"></i>{{generated_text}}</p>
+        </div>
+        <div id="smoking-stats">
+            <p>禁煙期間:<br><span id="smoking-duration-days"></span>日 <span id="smoking-duration-hours"></span>時間 <span id="smoking-duration-minutes"></span>分 <span id="smoking-duration-seconds"></span>秒</p>
+            <p>禁煙本数:<br><span id="smoking-count"></span>本</p>
+            <p>節約金額:<br><span id="saving-amount"></span>円</p>
+        </div>
+                
+        {% for post in posts %}
+        <article>
+            <div class="post-header">
+                <p class="post-username">{{ post.username }}</p>
+                <p class="post-created-at">{{ post.created_at }}</p>
+            </div>
+            <p>{{ post.body }}</p>
+        </article>
+        {% endfor %}
     </div>
-    
+
     <script>
         const startTime = new Date('{{ setting.start_at }}');
         const number = parseFloat('{{ setting.number }}');
         const price = parseFloat('{{ setting.price / 20 }}');
-    
+
         function updateSmokingStats() {
             const smokingDurationDaysElement = document.getElementById('smoking-duration-days');
             const smokingDurationHoursElement = document.getElementById('smoking-duration-hours');
@@ -34,39 +53,37 @@
             const smokingDurationSecondsElement = document.getElementById('smoking-duration-seconds');
             const smokingCountElement = document.getElementById('smoking-count');
             const savingAmountElement = document.getElementById('saving-amount');
-    
+
             const currentTime = new Date();
             const timeDiff = currentTime - startTime;
             const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
             const hoursDiff = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutesDiff = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
             const secondsDiff = Math.floor((timeDiff % (1000 * 60)) / 1000);
-    
+
             const smokingCount = daysDiff * number;
             const savingAmount = daysDiff * number * price;
-    
+
             smokingDurationDaysElement.textContent = daysDiff;
             smokingDurationHoursElement.textContent = hoursDiff;
             smokingDurationMinutesElement.textContent = minutesDiff;
             smokingDurationSecondsElement.textContent = secondsDiff;
             smokingCountElement.textContent = smokingCount;
-            savingAmountElement.textContent = `¥${savingAmount}`;
+            savingAmountElement.textContent = savingAmount;
         }
-    
+
         setInterval(updateSmokingStats, 1000);
-    
+
         updateSmokingStats();
+
+        const menuToggle = document.getElementById('menu-toggle');
+        const navLinks = document.getElementById('nav-links');
+
+        function toggleMenu() {
+            navLinks.classList.toggle('hidden');
+        }
+
+        menuToggle.addEventListener('click', toggleMenu);
     </script>
-    
-        
-<div class="container">
-    {% for post in posts %}
-    <article>
-        <h3>{{ post.title }}</h3>
-        <p>投稿者: {{ post.username }}</p>
-        <p>投稿日時: {{ post.created_at }}</p>
-        <p>本文: {{ post.body }}</p>
-    </article>
-    {% endfor %}
-</div>
-{% endblock %}
+</body>
+</html>

@@ -6,6 +6,7 @@ import pytz
 class Post(db.Model):
     __tablename__ = 'post'
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)
     username = db.Column(db.String(30), nullable=False)
     title = db.Column(db.String(50), nullable=False)
     body = db.Column(db.String(300), nullable=False)
@@ -19,7 +20,7 @@ class User(UserMixin, db.Model):
 
 class Setting(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False, unique=True)
+    user_id = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     number = db.Column(db.Integer, nullable=False)
     start_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
