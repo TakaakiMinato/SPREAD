@@ -87,14 +87,16 @@ def index():
         current_date = datetime.now().date()
         duration = (start_at.date() - current_date).days
      
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=generate_prompt(comment, duration),
-            max_tokens=100,
-            temperature=1.0
-        )
-        generated_text = response.choices[0].text
+       # response = openai.Completion.create(
+       #     model="text-davinci-003",
+       #     prompt=generate_prompt(comment, duration),
+       #     max_tokens=100,
+       #     temperature=1.0
+       # )
+       # generated_text = response.choices[0].text
        
+        generated_text="禁煙頑張ってください"
+
         return render_template('index.html', generated_text=generated_text, setting=setting, posts=posts, username=username)
 
 @app.route('/mypage', methods=['GET', 'POST'])
