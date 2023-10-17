@@ -2,3 +2,4 @@
 .vscode/
 migrations/
 flask_session/
+myenv/
