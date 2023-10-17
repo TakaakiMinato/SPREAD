@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import app, db, login_manager
@@ -68,7 +68,16 @@ def logout():
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    if request.method == 'GET':
+    if request.method == 'POST':
+        username = current_user.username
+        body = request.form.get('body')
+        user_id = current_user.id
+        post = Post(user_id=user_id,  username=username, body=body)
+        db.session.add(post)
+        db.session.commit()
+        return redirect('/index')
+
+    elif request.method == 'GET':
         posts = Post.query.all()
         username = current_user.username
         setting = Setting.query.filter_by(user_id = current_user.id).first()
@@ -121,24 +130,22 @@ def create():
     else:
         return render_template('create.html')
 
-@app.route('/<int:id>/update', methods=['GET', 'POST'])
-@login_required
-def update(id):
-    if request.method == 'GET':
-        post = Post.query.get(id)
-        return render_template('update.html', post=post)
-    else:
-        post = Post.query.get(id)
-        post.title = request.form.get('title')
-        post.body = request.form.get('body')
-        db.session.commit()
-        return redirect('/mypage')
 
-@app.route('/<int:id>/delete', methods=['GET'])
-@login_required
-def delete(id):
-    post = Post.query.get(id)
-    db.session.delete(post)
-    db.session.commit()
-    return redirect('/mypage')
+@app.route('/delete-posts', methods=['POST'])
+def delete_selected_posts():
+    data = request.get_json()
+    post_ids = data.get('postIds', [])
+
+    try:
+        for post_id in post_ids:
+            post = Post.query.get(post_id)
+            if post:
+                db.session.delete(post)
+        db.session.commit()
+        response = {'message': f'{len(post_ids)} 件の投稿が削除されました'}
+    except Exception as e:
+        db.session.rollback()
+        response = {'error': '削除中にエラーが発生しました'}
+
+    return jsonify(response)
 

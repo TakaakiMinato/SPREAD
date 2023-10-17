@@ -1,21 +1,74 @@
-{% extends "base.html" %}
-{% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/get.css') }}">
-{% endblock %}
-
-{% block content %}
-<a href="/index">戻る</a>
-<div class="post-list">
-    {% for post in posts %}
-    <article class="post">
-        <div class="post-actions">
-            <a href="/{{post.id}}/update" role="button" class="edit-button">編集</a>
-            <a href="/{{post.id}}/delete" role="button" class="delete-button">削除</a>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPREAD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="menu-toggle" id="menu-toggle">
+            <span class="toggle-icon">&#9776;</span>
         </div>
-        <h3 class="post-title">タイトル：{{ post.title }}</h3>
-        <p class="post-date">投稿日時：{{ post.created_at }}</p>
-        <p class="post-body">本文：{{ post.body }}</p>
-    </article>
-    {% endfor %}
-</div>
-{% endblock %}
+        <h1>SPREAD</h1>
+        <nav id="nav-links" class="hidden">
+            <a href="/index">ホーム</a>
+            <a href="/logout">ログアウト</a>
+        </nav>
+        </header>
+
+        <div class="container">
+            {% for post in posts %}
+            <article>
+                <div class="post-header">
+                    <input type="checkbox" class="post-checkbox" data-post-id="{{ post.id }}">
+                    <p class="post-username">{{ post.username }}</p>
+                    <p class="post-created-at">{{ post.created_at }}</p>
+                </div>
+                <p>{{ post.body }}</p>
+            </article>
+            {% endfor %}
+        </div>
+
+        <button id="delete-selected">選択した投稿を削除</button>
+
+    <script>
+
+        const menuToggle = document.getElementById('menu-toggle');
+        const navLinks = document.getElementById('nav-links');
+
+        function toggleMenu() {
+            navLinks.classList.toggle('hidden');
+        }
+
+        menuToggle.addEventListener('click', toggleMenu);
+
+        const deleteSelectedButton = document.getElementById('delete-selected');
+
+        deleteSelectedButton.addEventListener('click', function () {
+        const checkboxes = document.querySelectorAll('.post-checkbox:checked');
+        const postIds = Array.from(checkboxes).map(checkbox => checkbox.getAttribute('data-post-id'));
+
+        if (postIds.length > 0) {
+            fetch('/delete-posts', {
+                method: 'POST',
+                body: JSON.stringify({ postIds: postIds }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    window.location.reload(); 
+                } else {
+                    alert('削除に失敗しました。');
+                }
+            });
+        } else {
+            alert('削除する投稿が選択されていません。');
+        }
+    });
+    </script>
+</body>
+</html>

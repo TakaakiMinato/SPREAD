@@ -14,8 +14,7 @@
         </div>
         <h1>SPREAD</h1>
         <nav id="nav-links" class="hidden">
-            <a href="/create">新しい投稿をする</a>
-            <a href="/mypage">過去の投稿</a>
+            <a href="/mypage">マイページ</a>
             <a href="/logout">ログアウト</a>
         </nav>
         </header>
@@ -29,8 +28,11 @@
             <p>禁煙本数:<br><span id="smoking-count"></span>本</p>
             <p>節約金額:<br><span id="saving-amount"></span>円</p>
         </div>
-                
-        {% for post in posts %}
+        <form method="POST" class="post-form">
+            <input type="text" id="body" name="body" class="input-field">
+            <input type="submit" value="POST" class="submit-button">
+        </form>
+        {% for post in posts|sort(reverse=True, attribute='created_at') %}
         <article>
             <div class="post-header">
                 <p class="post-username">{{ post.username }}</p>

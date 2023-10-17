@@ -1,3 +1,4 @@
+
 /* 全体のスタイル */
 body {
     font-family: Arial, sans-serif;
@@ -167,4 +168,73 @@ a:hover {
 .container .gpt-comment i {
     font-size: 24px; /* アイコンのサイズを設定 */
     margin-right: 10px; /* アイコンとテキストの間隔を設定 */
+}
+
+/* フォーム周りの装飾を追加 */
+.post-form {
+    text-align: center;
+}
+
+.input-field {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* POSTボタンを投稿欄の右に配置 */
+.submit-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+
+/* チェックボックスとユーザー名を横に配置し、ユーザー名の左端に寄せる */
+.post-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+}
+
+.post-checkbox {
+    margin-right: 10px; /* チェックボックスとユーザー名の間隔を設定 */
+}
+
+.post-username {
+    margin: 0; /* ユーザー名の余白をリセット */
+}
+
+/* チェックボックスとユーザー名のまとまりを左端に配置 */
+.article {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* 日付を右端に配置 */
+.post-created-at {
+    margin-left: auto; /* 日付を右に寄せる */
+}
+
+/* 選択した投稿を削除ボタンを中央寄せに配置 */
+#delete-selected {
+    display: block;
+    margin: 0 auto;
+    background-color: red; /* 赤い背景色 */
+    color: white; /* 白いテキストカラー */
+    padding: 10px 20px; /* パディングを設定してボタンの大きさを調整 */
+    border: none; /* ボーダーを削除 */
+    cursor: pointer; /* マウスカーソルをポインターに変更 */
+}
+
+/* マウスオーバー時の効果を追加*/
+#delete-selected:hover {
+    background-color: darkred; /* マウスオーバー時に色を変更 */
 }
