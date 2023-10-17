@@ -132,6 +132,7 @@ def create():
 
 
 @app.route('/delete-posts', methods=['POST'])
+@login_required
 def delete_selected_posts():
     data = request.get_json()
     post_ids = data.get('postIds', [])

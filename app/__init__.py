@@ -11,9 +11,10 @@ app = Flask(__name__)
 # ここに必要な設定を追加
 app.config["SECRET_KEY"] = os.urandom(24)
 #開発環境
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://admin:M19970616@localhost/spread_db"
+#app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://admin:M19970616@localhost/spread_db"
 #本番環境
-#app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://admin:M19970616@spread-rds.cltnutjgc2rp.ap-northeast-1.rds.amazonaws.com/spread_db"
+#公開する場合はURI情報は外部ファイルに移管する必要あり
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://admin:M19970616@spread-rds.cltnutjgc2rp.ap-northeast-1.rds.amazonaws.com/spread_db"
 app.config["SESSION_TYPE"] = "filesystem"
 
 db = SQLAlchemy(app)
